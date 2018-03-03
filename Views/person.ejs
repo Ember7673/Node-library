@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>图书共享平台</title>
+	<link rel="stylesheet" type="text/css" href="/css/base.css">
+	<style>
+		.search-result-section {
+			border: 1px solid #48525E;
+			margin-top: 20px;
+		}
+		.search-result-section thead {
+			border-bottom: 1px solid #ddd;
+		}
+	</style>
+</head>
+<body>
+<!-- 引用头部 -->
+<% include layout-header %>	
+	
+	<div class="person">
+		
+		
+			<div class="search-result-section">
+					<table>
+						<thead>
+							<tr>
+								<th>序号</th>
+								<th>姓名</th>
+								<th>昵称</th>
+								<th>邮箱</th>
+								<th>专业</th>
+							</tr>
+						</thead>
+						<tbody>
+							<%personinfo.forEach(function(item){ %>
+							<tr>
+								<td><%= item.id%></td>
+								<td><%= item.username%></td>
+								<td><%= item.nickname%></td>
+								<td><%= item.email%></td>
+								<td><%= item.major%></td>
+							</tr>
+							<%})%>
+						</tbody>
+						
+					</table>
+			</div>
+		
+		
+	</div>
+		
+<!-- 引用尾部 -->
+<% include layout-footer %>
+
+<script>
+
+</script>

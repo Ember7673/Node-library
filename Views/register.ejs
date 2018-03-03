@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>沸点图书共享平台</title>
+	<link rel="stylesheet" type="text/css" href="/css/base.css">
+	<link rel="stylesheet" type="text/css" href="/css/register.css">
+</head>
+<body>
+<!-- 引用头部 -->
+<% include layout-header %>		
+	<div id="register-wrapper">
+		<div class="register">
+			<h2>用户注册</h2>
+			<form>
+				<span><font>用户名</font><input type="text" name="username" id="username"></span>
+				<span><font>密码</font><input type="password" name="password" id="password"></span>
+				<span><font>确认密码</font><input type="password" name="repwd" id="repwd"></span>
+				<span><font>邮箱</font><input type="text" name="email" id="email"></span>
+				<span><font>专业</font><input type="text" name="sex" id="major"></span>
+				<span class="option"><input type="button" value="注册" onclick="ajaxSubmit();"></span>
+			</form>
+			<div id="tips"></div>
+		</div>
+		<div class="introduction">
+			
+		</div>
+	</div>
+<!-- 引用尾部 -->
+<% include layout-footer %>
+	<script type="text/javascript">
+		var username = document.getElementById("username").value;
+		var finduser = function(){
+			username = document.getElementById("username").value;
+			var xhr = new XMLHttpRequest();
+			xhr.open('post','register/find_username',true);
+			xhr.onload = function(e) {
+				if(this.status == 200) {
+					if(xhr.responseText == "no") {
+		  				document.getElementById('tips').innerHTML = "用户名已存在，请更换";
+	  				}else{
+	  					document.getElementById('tips').innerHTML = "";
+	  				}
+				}
+			};
+			xhr.send(username);
+		}
+		setInterval(function(){
+			if(username == document.getElementById("username").value) {
+				
+			}else {
+				finduser();
+			}
+		}, 500);
+
+		var obj = {};
+		var ajaxSubmit = function() {
+			obj = {
+				username : document.getElementById("username").value.trim(),
+				password : document.getElementById("password").value,
+				repwd    : document.getElementById("repwd").value,
+				email    : document.getElementById("email").value.trim(),
+				major    : document.getElementById("major").value.trim()
+			};
+			if(obj.username == ""){
+				document.getElementById('tips').innerHTML = "用户名不能为空";
+			}else if(obj.password == ""){
+				document.getElementById('tips').innerHTML = "密码不能为空";
+			}else if(obj.repwd == "" || obj.password != obj.repwd){
+				document.getElementById('tips').innerHTML = "密码输入不一致";
+			}else if(obj.email == "") {
+				document.getElementById('tips').innerHTML = "邮箱不能为空";
+			}else if(obj.major == "") {
+				document.getElementById('tips').innerHTML = "专业不能为空";
+			}else{
+				finduser();
+				if(document.getElementById('tips').innerHTML == "") {
+					doajax();
+				}
+			}
+
+		};
+		var doajax = function(){
+			var xhr = new XMLHttpRequest();
+			xhr.open('post','register/do_register',true);
+			xhr.onload = function(e) {
+				if(this.status == 200) {
+					if(xhr.responseText == "fail") {
+		  				document.getElementById('tips').innerHTML = "注册失败，请重试";
+	  				}else{
+	  					var time = 3;
+	  					var timer = setInterval(function(){
+	  						document.getElementById('tips').innerHTML = '注册成功，' + time-- +'秒后跳转';
+	  						if(time < 0) {
+	  							clearInterval(finduser);
+	  							clearInterval(timer);
+					  			window.location.href = "index";
+	  						}
+	  					}, 1000);
+	  				}
+				}
+			};
+			xhr.send(JSON.stringify(obj));
+		};
+	</script>
+</body>
+</html>
